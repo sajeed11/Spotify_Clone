@@ -17,7 +17,7 @@ const TopChartsCard = ({ data, song, index, isPlaying, activeSong, i }) => {
     console.log("STRIIIIIIIIIIIIING");
     dispatch(playPause(false));
   };
-  const handlePlayClick = (song, index) => {
+  const handlePlayClick = () => {
     dispatch(setActiveSong({ song, data, index }));
     dispatch(playPause(true));
     console.log("STRIIIIIIIIIIIIING");
