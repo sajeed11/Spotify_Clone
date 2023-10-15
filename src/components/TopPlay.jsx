@@ -11,59 +11,60 @@ import { useGetTopChartsQuery } from "../redux/services/shazamCore";
 import "swiper/css";
 import "swiper/css/free-mode";
 
-const TopChartsCard = ({
-  song,
-  i,
-  isPlaying,
-  activeSong,
-  handlePlayClick,
-  handlePauseClick,
-}) => (
-  <div className="w-full flex rounded-lg cursor-pointer flex-row items-center hover:bg-[#4c426e] py-2 p-4">
-    <h3 className="font-bold text-white text-base mr-3">{i + 1}.</h3>
-    <div className="flex-1 flex flex-row justify-between items-center">
-      <img
-        src={song.images.coverart}
-        alt={song.title}
-        className="w-20 h-20 rounded-lg"
-      />
-      <div className="flex-1 flex flex-col justify-center mx-3">
-        <Link to={`/songs/${song.key}`}>
-          <p className="text-xl font-bold text-white">{song.title}</p>
-        </Link>
-        <Link to={`/artists/${song.artists[0].adamid}`}>
-          <p className="mt-1 text-base text-gray-300">{song.subtitle}</p>
-        </Link>
+const TopChartsCard = ({ data, song, index, isPlaying, activeSong, i }) => {
+  const dispatch = useDispatch();
+  const handlePauseClick = () => {
+    console.log("STRIIIIIIIIIIIIING");
+    dispatch(playPause(false));
+  };
+  const handlePlayClick = (song, index) => {
+    dispatch(setActiveSong({ song, data, index }));
+    dispatch(playPause(true));
+    console.log("STRIIIIIIIIIIIIING");
+  };
+  return (
+    <div
+      className={`w-full flex flex-row items-center hover:bg-[#4c426e] ${
+        activeSong?.title === song?.title ? "bg-[#4c426e]" : "bg-transparent"
+      } py-2 p-4 rounded-lg cursor-pointer mb-2`}
+    >
+      <h3 className="font-bold text-white text-base mr-3">{i + 1}.</h3>
+      <div className="flex-1 flex flex-row justify-between items-center">
+        <img
+          src={song.images.coverart}
+          alt={song.title}
+          className="w-20 h-20 rounded-lg"
+        />
+        <div className="flex-1 flex flex-col justify-center mx-3">
+          <Link to={`/songs/${song.key}`}>
+            <p className="text-xl font-bold text-white">{song.title}</p>
+          </Link>
+          <Link to={`/artists/${song.artists[0].adamid}`}>
+            <p className="mt-1 text-base text-gray-300">{song.subtitle}</p>
+          </Link>
+        </div>
       </div>
+      <PlayPause
+        isPlaying={isPlaying}
+        activeSong={activeSong}
+        song={song}
+        handlePause={handlePauseClick}
+        handlePlay={handlePlayClick}
+      />
     </div>
-    <PlayPause
-      isPlaying={isPlaying}
-      activeSong={activeSong}
-      handlePause={handlePauseClick}
-      handlePlay={handlePlayClick}
-      song={song}
-    />
-  </div>
-);
+  );
+};
 
 const TopPlay = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
-  const { data, isFetching } = useGetTopChartsQuery();
+  const { data } = useGetTopChartsQuery();
 
   const divRef = useRef(null);
 
   useEffect(() => {
     divRef.current.scrollIntoView({ behavior: "smooth" });
   });
-
-  const handlePauseClick = () => {
-    dispatch(playPause(false));
-  };
-  const handlePlay = ({ song, data, index }) => {
-    dispatch(setActiveSong({ song, data, index }));
-    dispatch(playPause(true));
-  };
 
   return (
     <div
@@ -82,13 +83,12 @@ const TopPlay = () => {
           {data?.tracks.slice(0, 5).map((song, i) => (
             <TopChartsCard
               song={song}
-              index={i}
+              i={i}
+              index={song}
               key={song.key}
               isPlaying={isPlaying}
               activeSong={activeSong}
-              handlePauseClick={handlePauseClick}
               data={data}
-              handlePlayClick={() => handlePlay(song, data, song)}
             />
           ))}
         </div>

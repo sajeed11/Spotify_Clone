@@ -10,7 +10,6 @@ const Discover = () => {
   const dispatch = useDispatch();
   const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data, isFetching, error } = useGetTopChartsQuery();
-  console.log(data);
 
   if (isFetching) return <Loader title="Loading Song" />;
   if (error) return <Error title="Failed to load songs" />;
