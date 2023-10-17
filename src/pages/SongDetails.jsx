@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { setActiveSong, playPause } from "../redux/features/playerSlice";
 import { Error, RelatedSongs, Loader, DetailsHeader } from "../components";
 
-import { useGetSongDetailsQuery } from "../redux/services/shazamCore";
+import {
+  useGetSongDetailsQuery,
+  useGetRecomndationsSongsQuery,
+} from "../redux/services/shazamCore";
 const SongDetails = () => {
   const dispatch = useDispatch();
   const { songId } = useParams();
@@ -13,7 +16,10 @@ const SongDetails = () => {
   const { data: songData, isFetching: isFetchingSongDetails } =
     useGetSongDetailsQuery({ songId });
 
-  console.log(songData);
+  const { data: recoData, isFetching: isFetchingRecoSongs } =
+    useGetRecomndationsSongsQuery({ songId });
+
+  console.log(recoData);
   return (
     <div className="flex flex-col">
       <DetailsHeader artistId="" songData={songData} />
@@ -31,6 +37,7 @@ const SongDetails = () => {
           )}
         </div>
       </div>
+      <RelatedSongs />
     </div>
   );
 };
